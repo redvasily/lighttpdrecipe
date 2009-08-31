@@ -1,0 +1,13 @@
+*.pyc
+*.swp
+*~
+
+
+# distribution stuff
+dist/*
+lighttpdrecipe.egg-info
+
+# Vim stuff
+.vimproject
+Session.vim
+.ropeproject/

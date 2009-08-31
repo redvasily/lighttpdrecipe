@@ -1,0 +1,40 @@
+{% if host_is_regexp %}
+$HTTP["host"] =~ "{{ host|host_regexp }}" {
+{% else %}
+$HTTP["host"] == "{{ host }}" {
+{% endif %}
+    server.document-root = "{{ document_root }}"
+    server.follow-symlink = "enable"
+    dir-listing.activate = "enable"
+
+    fastcgi.server = (
+        "/fcgi" => (
+            (
+                "bin-path" => "{{ bin_path }}",
+                "socket" => "/tmp/{{ socket }}.socket",
+                "check-local" => "disable",
+                "max-procs" => {{ processes }},
+                "min-procs" => {{ processes }},
+            )
+        )
+    )
+
+    url.rewrite-once = (
+        "^({{ media_url }}.*)$" => "/$1",
+        "^(/.*)$" => "/fcgi$1",
+    )
+
+    $HTTP["url"] =~ "^{{ media_url }}" {
+        expire.url = ( "" => "access {{ expiry_period }}" )
+    }
+}
+
+{% if redirect_to %}
+{% if redirect_is_regexp %}
+$HTTP["host"] =~ "{{ redirect_from|host_regexp }}" {
+{% else %}
+$HTTP["host"] == "{{ redirect_from }}" {
+{% endif %}
+    url.redirect = ( "^(/.*)" => "http://{{ redirect_to }}$1" )
+}
+{% endif %}
