@@ -7,7 +7,7 @@ setup(
     author='vasily sulatskov',
     author_email='redvasily@gmail.com',
     url='http://github.com/redvasily/lighttpdrecipe/tree/master/',
-    download_url='http://cloud.github.com/downloads/redvasily/lighttpdrecipe/lighttpdrecipe-0.1.tar.gz',
+    download_url='http://cloud.github.com/downloads/redvasily/lighttpdrecipe/',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
