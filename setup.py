@@ -21,7 +21,7 @@ setup(
     packages=find_packages(),
     package_data={
         '': ['*.jinja'],
-    ],
+    },
     install_requires=['setuptools', 'zc.recipe.egg', 'Jinja2'],
     entry_points = {'zc.buildout': ['default = lighttpdrecipe.recipe:Lighttpd']},
     zip_safe=False,
