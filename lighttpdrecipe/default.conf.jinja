@@ -1,12 +1,18 @@
+{% block config %}
+{% block host_condition %}
 {% if host_is_regexp %}
 $HTTP["host"] =~ "{{ host|host_regexp }}" {
 {% else %}
 $HTTP["host"] == "{{ host }}" {
 {% endif %}
+{% endblock %}
+    {% block documentroot %}
     server.document-root = "{{ document_root }}"
     server.follow-symlink = "enable"
     dir-listing.activate = "enable"
+    {% endblock %}
 
+    {% block fastcgi %}
     fastcgi.server = (
         "/fcgi" => (
             (
@@ -18,17 +24,23 @@ $HTTP["host"] == "{{ host }}" {
             )
         )
     )
+    {% endblock %}
 
+    {% block rewrites %}
     url.rewrite-once = (
         "^({{ media_url }}.*)$" => "/$1",
         "^(/.*)$" => "/fcgi$1",
     )
+    {% endblock %}
 
+    {% block expiry %}
     $HTTP["url"] =~ "^{{ media_url }}" {
         expire.url = ( "" => "access {{ expiry_period }}" )
     }
+    {% endblock %}
 }
 
+{% block redirects %}
 {% if redirect_to %}
 {% if redirect_is_regexp %}
 $HTTP["host"] =~ "{{ redirect_from|host_regexp }}" {
@@ -38,3 +50,5 @@ $HTTP["host"] == "{{ redirect_from }}" {
     url.redirect = ( "^(/.*)" => "http://{{ redirect_to }}$1" )
 }
 {% endif %}
+{% endblock %}
+{% endblock %}
