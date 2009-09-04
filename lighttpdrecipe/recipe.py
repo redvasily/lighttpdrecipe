@@ -1,5 +1,6 @@
 import re
 import os
+from os.path import join, dirname, abspath
 import logging
 import zc.buildout
 
@@ -71,13 +72,18 @@ class Lighttpd:
         def host_regexp(h):
             return ('|'.join('(%s)' % h for h in h.split()))
 
-        template_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), 'default.conf.jinja')
-        self.result = buildoutjinja.render_template(open(template_path).read(),
-            buildout, options, 
-            {
-                'host_regexp': host_regexp,
-            })
+        template_name = options.get('template', 'default.conf.jinja')
+        template_search_paths = [
+            dirname(abspath(__file__)),
+            buildout['buildout']['directory'],
+        ]
+        self.result = buildoutjinja.render_template(
+            template_search_paths,
+            template_name,
+            buildout,
+            options, 
+            {'host_regexp': host_regexp}
+        )
 
     def install(self):
         open(self.options['config_file'], 'w').write(self.result)
