@@ -3,7 +3,7 @@
 {%- set socket = redirect_to or buildout.django.project -%}
 {%- set bin_path = bin_path or buildout.buildout['bin-directory'] + '/django.fcgi' -%}
 {%- set document_root = buildout.buildout.directory -%}
-{%- set far_future_expiry = far_future_expiry or "e" -%}
+{%- set far_future_expiry = far_future_expiry or 'no' -%}
 
 {%- if far_future_expiry is true -%}
     {%- set expiry_period = expiry_period or '12 months' -%}
