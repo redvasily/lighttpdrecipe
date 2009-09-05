@@ -17,6 +17,7 @@ def render_template(search_paths, template_name, buildout, options,
 
     context = dict(options)
     context['buildout'] = buildout
+    context['options'] = options
     for key, value in buildout.iteritems():
         if key not in context:
             context[key] = value
