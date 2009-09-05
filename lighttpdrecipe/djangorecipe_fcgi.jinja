@@ -1,5 +1,6 @@
 {%- set processes = processes or '2' -%}
 {%- set media_url = '/media/' -%}
+{%- set dir_listing = dir_listing or 'enable' -%}
 {%- set socket = redirect_to or buildout.django.project -%}
 {%- set bin_path = bin_path or buildout.buildout['bin-directory'] + '/django.fcgi' -%}
 {%- set document_root = buildout.buildout.directory -%}
@@ -30,7 +31,7 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     {%- block documentroot %}
     server.document-root = "{{ document_root }}"
     server.follow-symlink = "enable"
-    dir-listing.activate = "enable"
+    dir-listing.activate = "{% if dir_listing is true %}enable{% else %}disable{% endif %}"
     {%- endblock %}
 
     {%- block fastcgi %}
