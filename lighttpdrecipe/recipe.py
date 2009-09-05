@@ -52,7 +52,7 @@ class Lighttpd:
         def host_regexp(h):
             return ('|'.join('(%s)' % h for h in h.split()))
 
-        template_name = options.get('template', 'default.conf.jinja')
+        template_name = options.get('template', 'djangorecipe_fcgi.jinja')
         template_search_paths = [
             dirname(abspath(__file__)),
             buildout['buildout']['directory'],
