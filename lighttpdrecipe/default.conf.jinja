@@ -2,7 +2,7 @@
 {%- set media_url = '/media/' -%}
 {%- set socket = redirect_to or buildout.django.project -%}
 {%- set bin_path = bin_path or buildout.buildout['bin-directory'] + '/django.fcgi' -%}
-{%- set document_root = buildout.directory -%}
+{%- set document_root = buildout.buildout.directory -%}
 {%- set far_future_expiry = far_future_expiry or "e" -%}
 
 {%- if far_future_expiry is true -%}
