@@ -6,6 +6,10 @@
 {%- set document_root = buildout.buildout.directory -%}
 {%- set far_future_expiry = far_future_expiry or 'no' -%}
 
+{%- set rewrite_admin_media = rewrite_admin_media or 'yes' -%}
+{%- set admin_media_url = admin_media_url or "/admin_media/" -%}
+{%- set admin_media_path = admin_media_path or buildout.django['location'][buildout.buildout.directory|length:] + '/django/contrib/admin/media/' -%}
+
 {%- if far_future_expiry is true -%}
     {%- set expiry_period = expiry_period or '12 months' -%}
 {%- else -%}
@@ -52,6 +56,9 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     {%- block rewrites %}
 
     url.rewrite-once = (
+        {% if rewrite_admin_media is true -%}
+        "^({{ admin_media_url }}.*)$" => "{{ admin_media_path }}$1",
+        {%- endif %}
         "^({{ media_url }}.*)$" => "/$1",
         "^(/.*)$" => "/fcgi$1",
     )
