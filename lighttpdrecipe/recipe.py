@@ -12,7 +12,7 @@ def is_simple_host(s):
     return not ((len(s.splitlines()) > 1) or (not hostname_regexp.match(s)))
 
 def is_true(s):
-    if s.lower() in ['yes', 'y', 'true']:
+    if s.lower() in set(['yes', 'y', 'true', 'enable', 'enabled']):
         return True
     return False
 
