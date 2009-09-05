@@ -27,13 +27,14 @@ $HTTP["host"] == "{{ host }}" {
 $HTTP["host"] =~ "{{ host_regexp(host) }}" {
 {%- endif -%}
 {% endblock %}
-    {% block documentroot %}
+    {%- block documentroot %}
     server.document-root = "{{ document_root }}"
     server.follow-symlink = "enable"
     dir-listing.activate = "enable"
-    {% endblock %}
+    {%- endblock %}
 
-    {% block fastcgi %}
+    {%- block fastcgi %}
+
     fastcgi.server = (
         "/fcgi" => (
             (
@@ -45,31 +46,34 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
             )
         )
     )
-    {% endblock %}
+    {%- endblock %}
 
-    {% block rewrites %}
+    {%- block rewrites %}
+
     url.rewrite-once = (
         "^({{ media_url }}.*)$" => "/$1",
         "^(/.*)$" => "/fcgi$1",
     )
-    {% endblock %}
+    {%- endblock %}
 
-    {% block expiry %}
+    {%- block expiry %}
+    
     $HTTP["url"] =~ "^{{ media_url }}" {
         expire.url = ( "" => "access {{ expiry_period }}" )
     }
-    {% endblock %}
+    {%- endblock %}
 }
 
-{% block redirects %}
+{%- block redirects %}
+
 {% if redirect_from %}
-{% if redirect_to is simple_host %}
+{%- if redirect_to is simple_host -%}
 $HTTP["host"] == "{{ redirect_from }}" {
-{% else %}
+{%- else -%}
 $HTTP["host"] =~ "{{ host_regexp(redirect_from) }}" {
 {% endif %}
     url.redirect = ( "^(/.*)" => "http://{{ redirect_to }}$1" )
 }
-{% endif %}
-{% endblock %}
+{%- endif %}
+{%- endblock %}
 {% endblock %}
