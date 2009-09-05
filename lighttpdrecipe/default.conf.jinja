@@ -1,10 +1,31 @@
-{% block config %}
-{% block host_condition %}
-{% if host_is_regexp %}
-$HTTP["host"] =~ "{{ host|host_regexp }}" {
-{% else %}
+{%- set processes = processes or '2' -%}
+{%- set media_url = '/media/' -%}
+{%- set socket = redirect_to or buildout.django.project -%}
+{%- set bin_path = bin_path or buildout.buildout['bin-directory'] + '/django.fcgi' -%}
+{%- set document_root = buildout.directory -%}
+{%- set far_future_expiry = far_future_expiry or "e" -%}
+
+{%- if far_future_expiry is true -%}
+    {%- set expiry_period = expiry_period or '12 months' -%}
+{%- else -%}
+    {%- set expiry_period = expiry_period or '1 seconds' -%}
+{%- endif -%}
+
+{%- macro host_regexp(hosts) -%}
+    {%- if hosts.splitlines()|length > 1 -%}
+        {%- for h in host.splitlines() -%}({{ h.strip() }}){%- if not loop.last -%}|{%- endif -%}{%- endfor -%}
+    {%- else -%}
+        {{ hosts }}
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- block config -%}
+{%- block host_condition -%}
+{%- if host is simple_host -%}
 $HTTP["host"] == "{{ host }}" {
-{% endif %}
+{%- else -%}
+$HTTP["host"] =~ "{{ host_regexp(host) }}" {
+{%- endif -%}
 {% endblock %}
     {% block documentroot %}
     server.document-root = "{{ document_root }}"
@@ -41,11 +62,11 @@ $HTTP["host"] == "{{ host }}" {
 }
 
 {% block redirects %}
-{% if redirect_to %}
-{% if redirect_is_regexp %}
-$HTTP["host"] =~ "{{ redirect_from|host_regexp }}" {
-{% else %}
+{% if redirect_from %}
+{% if redirect_to is simple_host %}
 $HTTP["host"] == "{{ redirect_from }}" {
+{% else %}
+$HTTP["host"] =~ "{{ host_regexp(redirect_from) }}" {
 {% endif %}
     url.redirect = ( "^(/.*)" => "http://{{ redirect_to }}$1" )
 }

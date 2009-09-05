@@ -8,20 +8,15 @@ import buildoutjinja
 
 hostname_regexp = re.compile(r'^[-a-z\.0-9]*$', re.I)
 
-def splitlit(t):
-    return [s.strip() for s in t.splitlines()]
+def is_simple_host(s):
+    return not ((len(s.splitlines()) > 1) or (not hostname_regexp.match(s)))
 
-
-def normalize_bool(s):
+def is_true(s):
     if s.lower() in ['yes', 'y', 'true']:
-        return 'True'
-    return ''
-
-def is_regexp(s):
-    return ((len(s.splitlines()) > 1) or (not hostname_regexp.match(s)))
+        return True
+    return False
 
 class Lighttpd:
-
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
         self.logger = logging.getLogger(name)
@@ -34,40 +29,25 @@ class Lighttpd:
 
         redirect_to = options['host'].splitlines()[0].strip()
 
-        if ('redirect_to' not in options and is_regexp(redirect_to)):
+        if ('redirect_to' not in options and 'redirect_from' in options and
+            not is_simple_host(redirect_to)):
+
             msg = ("Redirect location looks like a regexp. Please specify"
                 " redirect destination with 'redirect_to' option")
             self.logger.error(msg)
             raise zc.buildout.UserError(msg)
 
-        host_is_regexp = is_regexp(options['host'])
-        redirect_is_regexp = is_regexp(options.get('redirect_to', ''))
-
         default_options = {
-            'processes': '2',
-            'extra': '',
-            'media_url': '/media/',
-            'priority': '11',
-            'config_name': options.get('redirect_to', redirect_to),
-            'socket': options.get('redirect_to', redirect_to),
-            'bin_path': buildout['buildout']['bin-directory'] + '/django.fcgi',
-            'document_root': buildout['buildout']['directory'],
-            'host_is_regexp': str(host_is_regexp),
-            'redirect_is_regexp': str(redirect_is_regexp),
-            'redirect_to': redirect_to,
-            'expiry_period': (options.get('far_future_expiry', False) and 
-                '12 months' or '1 seconds'),
+           'priority': '11',
+           'config_name': options.get('redirect_to', redirect_to),
         }
 
         for key, value in default_options.iteritems():
-            if key not in options:
-                options[key] = value
+           if key not in options:
+               options[key] = value
 
         options['config_file'] = (options['priority'] + '-' +
             options['config_name'] + '.conf')
-
-        options['host_is_regexp'] = normalize_bool(options['host_is_regexp'])
-        options['redirect_is_regexp'] = normalize_bool(options['redirect_is_regexp'])
 
         def host_regexp(h):
             return ('|'.join('(%s)' % h for h in h.split()))
@@ -82,7 +62,10 @@ class Lighttpd:
             template_name,
             buildout,
             options, 
-            {'host_regexp': host_regexp}
+            tests={
+                'simple_host': is_simple_host,
+                'true': is_true,
+            },
         )
 
     def install(self):
