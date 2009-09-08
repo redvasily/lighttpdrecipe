@@ -40,6 +40,7 @@ class Lighttpd:
         default_options = {
            'priority': '11',
            'config_name': options.get('redirect_to', redirect_to),
+           'redirect_to': redirect_to,
         }
 
         for key, value in default_options.iteritems():
