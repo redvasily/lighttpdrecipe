@@ -7,8 +7,14 @@
 {%- set far_future_expiry = far_future_expiry or 'no' -%}
 
 {%- set rewrite_admin_media = rewrite_admin_media or 'yes' -%}
-{%- set admin_media_url = admin_media_url or "/admin_media/" -%}
+{%- set admin_media_url = admin_media_url or "/admin_media" -%}
 {%- set admin_media_path = admin_media_path or buildout.django['location'][buildout.buildout.directory|length:] + '/django/contrib/admin/media/' -%}
+
+{%- set media = media or '' -%}
+
+{%- if rewrite_admin_media -%}
+    {%- set media = media + '\n' + admin_media_url + ' => ' + admin_media_path -%}
+{%- endif -%}
 
 {%- if far_future_expiry is true -%}
     {%- set expiry_period = expiry_period or '12 months' -%}
@@ -53,12 +59,31 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     )
     {%- endblock %}
 
+    {%- block aliasurl %}
+
+    {% if media -%}
+    alias.url = (
+        {%- for line in media.splitlines() %}
+        {%- if line.strip() %}
+        {%- set parts = line.split('=>') %}
+        "{{ parts[0].strip() }}" => "{{ parts[1].strip() }}",
+        {%- endif %}
+        {%- endfor %}
+    )
+    {%- endif %}
+    {%- endblock %}
+
     {%- block rewrites %}
 
     url.rewrite-once = (
-        {% if rewrite_admin_media is true -%}
-        "^({{ admin_media_url }}.*)$" => "{{ admin_media_path }}$1",
-        {%- endif %}
+        {% if media %}
+        {%- for line in media.splitlines() %}
+        {%- if line.strip() %}
+        {%- set fromurl = line.split('=>')[0] -%}
+        "^({{ fromurl.strip() }}.*$" => "/$1",
+        {% endif %}
+        {%- endfor %}
+        {%- endif -%}
         "^({{ media_url }}.*)$" => "/$1",
         "^(/.*)$" => "/fcgi$1",
     )
