@@ -38,6 +38,7 @@ $HTTP["host"] == "{{ host }}" {
 $HTTP["host"] =~ "{{ host_regexp(host) }}" {
 {%- endif -%}
 {% endblock %}
+    {%- block configbody %}
     {%- block documentroot %}
     server.document-root = "{{ document_root }}"
     server.follow-symlink = "enable"
@@ -94,6 +95,7 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     $HTTP["url"] =~ "^{{ media_url }}" {
         expire.url = ( "" => "access {{ expiry_period }}" )
     }
+    {%- endblock %}
     {%- endblock %}
 }
 
