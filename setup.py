@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="lighttpdrecipe",
-    version='0.1.3',
+    version='0.1.4',
     description='Buildout recipe for generating lighttpd configuration files',
     author='vasily sulatskov',
     author_email='redvasily@gmail.com',
