@@ -8,7 +8,7 @@
 
 {%- set rewrite_admin_media = rewrite_admin_media or 'yes' -%}
 {%- set admin_media_url = admin_media_url or "/admin_media" -%}
-{%- set admin_media_path = admin_media_path or buildout.django['location'][buildout.buildout.directory|length:] + '/django/contrib/admin/media/' -%}
+{%- set admin_media_path = admin_media_path or buildout.django['location'] + '/django/contrib/admin/media/' -%}
 
 {%- set media = media or '' -%}
 
