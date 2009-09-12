@@ -57,8 +57,9 @@ This recipe will generate a following config file::
         )
 
         alias.url = (
-            "/favicon.ico" => "$(buildout:directory)/media/favicon.ico",
+            "/favicon.ico" => "/var/sites/lighttpdrecipetest/media/favicon.ico",
             "/admin_media" => "/var/sites/lighttpdrecipetest/parts/django/django/contrib/admin/media/",
+            "/media" => "/var/sites/lighttpdrecipetest/media/",
         )
 
         url.rewrite-once = (
@@ -67,7 +68,7 @@ This recipe will generate a following config file::
             "^(/media/.*)$" => "/$1",
             "^(/.*)$" => "/fcgi$1",
         )
-        
+
         $HTTP["url"] =~ "^/media/" {
             expire.url = ( "" => "access 1 seconds" )
         }
