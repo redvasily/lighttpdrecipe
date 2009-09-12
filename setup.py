@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name="lighttpdrecipe",
-    version='0.1.4',
-    description='Buildout recipe for generating lighttpd configuration files',
-    author='vasily sulatskov',
+    version='0.2',
+    description='Buildout recipe for generating Lighttpd configuration files',
+    author='Vasily Sulatskov',
     author_email='redvasily@gmail.com',
     url='http://github.com/redvasily/lighttpdrecipe/tree/master/',
     download_url='http://cloud.github.com/downloads/redvasily/lighttpdrecipe/',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         "Framework :: Buildout",
         'Intended Audience :: Developers',
