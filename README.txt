@@ -35,7 +35,7 @@ Basic buildout.cfg::
     host = example.com
     redirect_from = www.example.com
     media =
-        /favicon.ico => $(buildout:directory)/media/favicon.ico
+        /favicon.ico => ${buildout:directory}/media/favicon.ico
 
 This recipe will generate a following config file::
 
