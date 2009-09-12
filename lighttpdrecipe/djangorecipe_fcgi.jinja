@@ -1,5 +1,6 @@
 {%- set processes = processes or '4' -%}
-{%- set media_url = '/media/' -%}
+{%- set media_url = '/media' -%}
+{%- set media_root = media_root or buildout.buildout['directory'] + '/media/' -%}
 {%- set dir_listing = dir_listing or 'enable' -%}
 {%- set socket = redirect_to or buildout.django.project -%}
 {%- set bin_path = bin_path or buildout.buildout['bin-directory'] + '/django.fcgi' -%}
@@ -13,8 +14,10 @@
 {%- set media = media or '' -%}
 
 {%- if rewrite_admin_media -%}
-    {%- set media = media + '\n' + admin_media_url + ' => ' + buildout.buildout.directory + admin_media_path -%}
+    {%- set media = media + '\n' + admin_media_url + ' => ' + admin_media_path -%}
 {%- endif -%}
+
+{%- set media = media + '\n' + media_url + ' => ' + media_root -%}
 
 {%- if far_future_expiry is true -%}
     {%- set expiry_period = expiry_period or '12 months' -%}
@@ -85,7 +88,6 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
         {% endif %}
         {%- endfor %}
         {%- endif -%}
-        "^({{ media_url }}.*)$" => "/$1",
         "^(/.*)$" => "/fcgi$1",
     )
     {%- endblock %}
