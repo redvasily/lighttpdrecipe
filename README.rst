@@ -168,6 +168,10 @@ expiry_period (optional, default value depends on "far_future_expiry" option)
     not set - "1 seconds".
     If you provide explict "expiry_period" then your value is used.
 
+extra (optional)
+    Value of "extra" option (if given) in inserted verbatim near the end of
+    $HTTP["host"] match section
+
 
 Customizing template
 ====================

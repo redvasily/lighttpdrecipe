@@ -109,6 +109,10 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     }
     {%- endblock %}
     {%- endblock %}
+
+    {% if options.extra %}
+    {{ options.extra }}
+    {% endif %}
 }
 
 {%- block redirects %}
