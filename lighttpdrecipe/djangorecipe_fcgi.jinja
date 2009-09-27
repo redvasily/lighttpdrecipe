@@ -93,6 +93,16 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
     {%- endblock %}
 
     {%- block expiry %}
+    {% if media %}
+    expire.url = (
+        {%- for line in media.splitlines() %}
+        {%- if line.strip() %}
+        {%- set fromurl = line.split('=>')[0] %}
+        "{{ fromurl.strip() }}" => "{{ expiry_period }}",
+        {%- endif -%}
+        {%- endfor %}
+    )
+    {%- endif %}
     
     $HTTP["url"] =~ "^{{ media_url }}" {
         expire.url = ( "" => "access {{ expiry_period }}" )
