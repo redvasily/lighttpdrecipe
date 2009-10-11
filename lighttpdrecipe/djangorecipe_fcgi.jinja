@@ -1,5 +1,5 @@
 {%- set processes = processes or '4' -%}
-{%- set media_url = '/media' -%}
+{%- set media_url = media_url or '/media' -%}
 {%- set media_root = media_root or buildout.buildout['directory'] + '/media/' -%}
 {%- set dir_listing = dir_listing or 'enable' -%}
 {%- set socket = redirect_to or buildout.django.project -%}
