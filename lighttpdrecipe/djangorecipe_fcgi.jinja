@@ -114,7 +114,7 @@ $HTTP["host"] =~ "{{ host_regexp(host) }}" {
 {%- block redirects %}
 
 {% if redirect_from %}
-{%- if redirect_to is simple_host -%}
+{%- if redirect_from is simple_host -%}
 $HTTP["host"] == "{{ redirect_from }}" {
 {%- else -%}
 $HTTP["host"] =~ "{{ host_regexp(redirect_from) }}" {
